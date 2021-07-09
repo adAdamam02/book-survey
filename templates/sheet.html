@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+
+{% block main %}
+
+        <!-- http://getbootstrap.com/docs/4.1/content/typography/ -->
+        <h1 class="mb-3">Sheet</h1>
+
+        <!-- http://getbootstrap.com/docs/4.1/components/tables/ -->
+        <table class="table">
+            <thead>
+                <tr>
+                    {% for key in rows[0] %}
+                        <th>{{ key | title }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                    <tr>
+                        {% for key in row %}
+                            {% if key == 'genres' %}
+                                <td>
+                                    {% if row.genres | length > 1 %}
+                                        <select class="form-control" name="genres">
+                                            {% for genre in row.genres %}
+                                                {% if loop.index == 1 %}
+                                                    <option disabled selected value="{{ genre }}">{{ genre | title }}</option>
+                                                {% else %}
+                                                    <option disabled value="{{ genre }}">{{ genre | title }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                    {% else %}
+                                        {{ row.genres[0] }}
+                                    {% endif %}
+                                </td>
+                            {% else %}
+                                <td>{{ row[key] | title}}</td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+{% endblock %}

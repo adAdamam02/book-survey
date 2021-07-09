@@ -1,0 +1,149 @@
+{% extends "layout.html" %}
+
+{% block main %}
+
+    <!-- http://getbootstrap.com/docs/4.1/content/typography/ -->
+    <h1 class="mb-3">Form</h1>
+
+    <div id="alert" class="alert alert-danger d-none text-center mb-3" role="alert"></div>
+
+    <!-- http://getbootstrap.com/docs/4.1/components/forms/ -->
+    <form id="form" action="/form" method="post">
+        <div class="form-group">
+            <input id=name autocomplete="off" autofocus name="name" class="form-control" placeholder="Name" type="text">
+        </div>
+
+        <div class="form-group">
+            <input id="book" autocomplete="off" autofocus name="book" class="form-control" placeholder="Favorite Book" type="text">
+        </div>
+
+        <div class="form-group">
+            <select class="form-control" id="type" name="type">
+                <option disabled selected value="">Fiction or Nonfiction?</option>
+
+                {% for type in types %}
+
+                    <option value="{{ type }}">{{ type }}</option>
+
+                {% endfor %}
+
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <div id="fiction" class="form-group" style="display:none;" name="fiction">
+
+                {% for genre in fiction_genres %}
+
+                    <div class="form-check">
+                        <input class="fiction form-check-input" id="{{ genre }}" name="{{ genre }}" type="checkbox" value="{{ genre }}">
+                        <label class="form-check-label" for="{{ genre }}">
+                            {{ genre }}
+                        </label>
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+            <div id="nonfiction" class="form-group" style="display:none;" name="nonfiction">
+
+                {% for genre in nonfiction_genres %}
+
+                    <div class="form-check">
+                        <input class="nonfiction form-check-input" id="{{ genre }}" name="{{ genre }}" type="checkbox" value="{{ genre }}">
+                        <label class="form-check-label" for="{{ genre }}">
+                            {{ genre }}
+                        </label>
+                    </div>
+
+                {% endfor %}
+
+            </div>
+        </div>
+
+        <!-- http://getbootstrap.com/docs/4.1/components/buttons/ -->
+        <button class="btn btn-primary" type="submit">Submit</button>
+
+    </form>
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function() {
+            document.addEventListener("submit", function(e) {
+
+                a = document.querySelector("#alert");
+
+                type = document.querySelector("#type").value;
+
+                let error = 0;
+
+                if (document.querySelector("#name").value == "")
+                {
+                    a.innerHTML = "You must include your name!";
+                    error++;
+                }
+                else if (document.querySelector("#book").value == "")
+                {
+                    a.innerHTML = "You must include your favorite book!";
+                    error++;
+                }
+                else if (type == "")
+                {
+                    a.innerHTML = "You must include if your favorite book is fiction or nonfiction!";
+                    error++;
+                }
+                else if (document.querySelectorAll("input[type='checkbox']:checked").length == 0)
+                {
+                    a.innerHTML = "You must include the genre(s) of your book!";
+                    error++;
+                }
+
+                if (error == 1)
+                {
+                    a.classList.remove("d-none");
+                    e.preventDefault();
+                }
+            });
+
+            // Sets type, fiction, and nonfiction to their respective html elements
+            let type = document.querySelector("#type");
+            let fiction = document.querySelector("#fiction");
+            let nonfiction = document.querySelector("#nonfiction");
+
+            // Reveals the fiction or nonfiction genres list depending on which is selected
+            type.addEventListener("change", function()
+            {
+                if (type.value == "Fiction")
+                {
+                    // Clears nonfiction boxes
+                    let nonfiction_list = document.querySelectorAll(".nonfiction");
+
+                    for (let i = 0; i < nonfiction_list.length; i++)
+                    {
+                        nonfiction_list[i].checked = false;
+                    }
+
+
+                    fiction.style.display = "initial";
+                    nonfiction.style.display = "none";
+                }
+                else
+                {
+                    // Clears fiction boxes
+                    let fiction_list = document.querySelectorAll(".fiction");
+
+                    for (let i = 0; i < fiction_list.length; i++)
+                    {
+                        fiction_list[i].checked = false;
+                    }
+
+                    nonfiction.style.display = "initial";
+                    fiction.style.display = "none";
+                }
+            });
+        });
+
+    </script>
+
+{% endblock %}
